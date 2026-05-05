@@ -34,12 +34,16 @@ const TodoItem = (props: TodoItem.Props) => {
       <CardContent>
         <div>{description}</div>
       </CardContent>
-      <CardFooter className={styles.footerActions}>
-        <Button variant="destructive" onClick={handleRemove}>
-          Удалить
-        </Button>
-        <TodoEditor todo={todo} />
-        <TodoCompletedCheckbox id={todo.id} />
+      <CardFooter>
+        <div className={styles.footerStart}>
+          <Button variant="destructive" onClick={handleRemove}>
+            Удалить
+          </Button>
+          <TodoEditor todo={todo} />
+        </div>
+        <div className={styles.completionCheckbox}>
+          <TodoCompletedCheckbox id={todo.id} />
+        </div>
       </CardFooter>
     </Card>
   );

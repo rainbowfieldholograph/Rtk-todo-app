@@ -1,0 +1,14 @@
+.card {
+  background-color: var(--secondary);
+}
+
+.footerStart {
+  display: flex;
+  column-gap: 0.5rem;
+  align-items: center;
+}
+
+.completionCheckbox {
+  margin-left: auto;
+  margin-top: auto;
+}
