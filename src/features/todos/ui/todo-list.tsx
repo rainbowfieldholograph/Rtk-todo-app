@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../../shared/redux";
 import { todosSlice } from "../model/todos-slice";
-import { TodoItem } from "./todo-item";
+import { TodoItem } from "./todo-item/todo-item";
 import styles from "./todo-list.module.css";
 
 const TodoList = () => {

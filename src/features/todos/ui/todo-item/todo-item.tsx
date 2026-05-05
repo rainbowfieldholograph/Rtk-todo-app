@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { Button } from "~/shared/ui/kit/button";
-import { todosSlice, type Todo } from "../model/todos-slice";
+import { todosSlice, type Todo } from "../../model/todos-slice";
 import {
   Card,
   CardContent,
@@ -8,8 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "~/shared/ui/kit/card";
-import { TodoEditor } from "./todo-editor";
+import { TodoEditor } from "../todo-editor";
 import styles from "./todo-item.module.css";
+import { TodoCompletedCheckbox } from "./todo-completed-checkbox";
 
 namespace TodoItem {
   export type Props = { todo: Todo };
@@ -17,7 +18,7 @@ namespace TodoItem {
 
 const TodoItem = (props: TodoItem.Props) => {
   const { todo } = props;
-  const { id, title, description, completed } = todo;
+  const { id, title, description } = todo;
 
   const dispatch = useDispatch();
 
@@ -32,13 +33,13 @@ const TodoItem = (props: TodoItem.Props) => {
       </CardHeader>
       <CardContent>
         <div>{description}</div>
-        <div>Выполнено: {completed ? "Да" : "Нет"}</div>
       </CardContent>
       <CardFooter className={styles.footerActions}>
         <Button variant="destructive" onClick={handleRemove}>
           Удалить
         </Button>
         <TodoEditor todo={todo} />
+        <TodoCompletedCheckbox id={todo.id} />
       </CardFooter>
     </Card>
   );

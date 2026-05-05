@@ -73,11 +73,24 @@ const todosSlice = createSlice({
         const { fields, id } = action.payload;
 
         const todo = state.entities[id];
+        if (!todo) return;
+
         state.entities[id] = { ...todo, ...fields };
       },
     );
 
-    return { createTodo, removeTodo, editTodo };
+    const toggleTodoCompleted = create.reducer(
+      (state, action: PayloadAction<{ id: TodoId; completed?: boolean }>) => {
+        const { id, completed } = action.payload;
+
+        const todo = state.entities[id];
+        if (!todo) return;
+
+        todo.completed = completed ?? !todo.completed;
+      },
+    );
+
+    return { createTodo, removeTodo, editTodo, toggleTodoCompleted };
   },
   selectors: {
     todoEntities: (state: State) => state.entities,
@@ -85,8 +98,9 @@ const todosSlice = createSlice({
     todoList: createSelector([(state: State) => state.entities], (entities) => {
       return Object.values(entities);
     }),
+    todoCompleted: (state: State, id: TodoId) => state.entities[id]?.completed,
   },
 }).injectInto(rootReducer);
 
 export { todosSlice };
-export type { Todo };
+export type { Todo, TodoId };
