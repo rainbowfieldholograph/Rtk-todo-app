@@ -62,7 +62,22 @@ const todosSlice = createSlice({
       },
     );
 
-    return { createTodo, removeTodo };
+    const editTodo = create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          id: TodoId;
+          fields: Partial<Pick<Todo, "title" | "description" | "completed">>;
+        }>,
+      ) => {
+        const { fields, id } = action.payload;
+
+        const todo = state.entities[id];
+        state.entities[id] = { ...todo, ...fields };
+      },
+    );
+
+    return { createTodo, removeTodo, editTodo };
   },
   selectors: {
     todoEntities: (state: State) => state.entities,

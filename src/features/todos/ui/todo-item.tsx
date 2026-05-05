@@ -8,11 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "~/shared/ui/kit/card";
+import { TodoEditor } from "./todo-editor";
+import styles from "./todo-item.module.css";
 
 namespace TodoItem {
-  export type Props = {
-    todo: Todo;
-  };
+  export type Props = { todo: Todo };
 }
 
 const TodoItem = (props: TodoItem.Props) => {
@@ -34,10 +34,11 @@ const TodoItem = (props: TodoItem.Props) => {
         <div>{description}</div>
         <div>Выполнено: {completed ? "Да" : "Нет"}</div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className={styles.footerActions}>
         <Button variant="destructive" onClick={handleRemove}>
           Удалить
         </Button>
+        <TodoEditor todo={todo} />
       </CardFooter>
     </Card>
   );
