@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 import styles from "./layout.module.css";
+import clsx from "clsx";
 
 namespace Layout {
   export type NavLink = { to: string; label: string };
@@ -16,21 +17,35 @@ const Layout = (props: Layout.Props) => {
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
-        <h1 className={styles.title}>
-          <Link to={homeLink}>Todo App</Link>
+        <h1 className={styles.homeTitle}>
+          <NavLink
+            className={({ isActive }) =>
+              clsx(styles.link, isActive && styles.active)
+            }
+            to={homeLink}
+          >
+            Todo App
+          </NavLink>
         </h1>
         <nav>
           <ul className={styles.navLinksList}>
             {navLinks.map(({ to, label }) => (
               <li key={to + label}>
-                <Link to={to}>{label}</Link>
+                <NavLink
+                  className={({ isActive }) =>
+                    clsx(styles.link, isActive && styles.active)
+                  }
+                  to={to}
+                >
+                  {label}
+                </NavLink>
               </li>
             ))}
           </ul>
         </nav>
       </header>
       <main className={styles.main}>{children}</main>
-      <footer className={styles.footer}>Footer</footer>
+      <footer className={styles.footer}>2026</footer>
     </div>
   );
 };

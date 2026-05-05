@@ -13,7 +13,13 @@
   align-items: center;
 }
 
-.title {
+.link {
+  &.active {
+    text-decoration: underline;
+  }
+}
+
+.homeTitle {
   font-size: 1.5rem;
   margin-right: 3rem;
 }
