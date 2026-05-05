@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { todosSlice } from "../model/todos-slice";
 import { TodoForm } from "./todo-form";
 
-export const TodoCreator = () => {
+const TodoCreator = () => {
   const dispatch = useDispatch();
 
   const handleSubmit: TodoForm.Props["onSubmit"] = ({ title, description }) => {
@@ -25,3 +25,5 @@ export const TodoCreator = () => {
     />
   );
 };
+
+export { TodoCreator };
