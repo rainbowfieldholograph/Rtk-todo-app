@@ -12,3 +12,17 @@
   margin-bottom: 0.75rem;
   font-size: 1.4rem;
 }
+
+.selectContainer {
+  margin-bottom: 1rem;
+}
+
+.selectTrigger {
+  max-width: 12rem;
+  width: 100%;
+}
+
+.selectValue {
+  display: block;
+  text-overflow: ellipsis;
+}

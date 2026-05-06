@@ -18,7 +18,11 @@ type TodosEntityState = {
   ids: TodoId[]; // Управляет порядком списка
 };
 
+type SortField = keyof Pick<Todo, "completed" | "description" | "title">;
+type Sort = { field: SortField; order: "asc" | "desc" };
+
 type State = {
+  selectedSort: Sort | null;
   items: TodosEntityState;
 };
 
@@ -31,7 +35,7 @@ const initialTodos: TodosEntityState = todos.reduce(
   { entities: {}, ids: [] } as TodosEntityState,
 );
 
-const initialState: State = { items: initialTodos };
+const initialState: State = { items: initialTodos, selectedSort: null };
 
 const todosSlice = createSlice({
   name: "Todos",
@@ -93,7 +97,20 @@ const todosSlice = createSlice({
       },
     );
 
-    return { createTodo, removeTodo, editTodo, toggleTodoCompleted };
+    const changeSort = create.reducer(
+      (state, action: PayloadAction<{ sort: Sort | null }>) => {
+        console.log("new sort: ", action.payload.sort);
+        state.selectedSort = action.payload.sort;
+      },
+    );
+
+    return {
+      createTodo,
+      removeTodo,
+      editTodo,
+      toggleTodoCompleted,
+      changeSort,
+    };
   },
   selectors: {
     todoEntities: (state: State) => state.items.entities,
@@ -106,8 +123,9 @@ const todosSlice = createSlice({
     ),
     todoCompleted: (state: State, id: TodoId) =>
       state.items.entities[id]?.completed,
+    selectedSort: (state: State) => state.selectedSort,
   },
 }).injectInto(rootReducer);
 
 export { todosSlice };
-export type { Todo, TodoId };
+export type { Todo, TodoId, SortField, Sort };
