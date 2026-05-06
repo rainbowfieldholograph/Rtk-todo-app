@@ -13,22 +13,25 @@ type Todo = {
   description: string;
   completed: boolean;
 };
-
-type State = {
+type TodosEntityState = {
   entities: Record<TodoId, Todo>;
-  ids: TodoId[];
+  ids: TodoId[]; // Управляет порядком списка
 };
 
-const initialTodos: State = todos.reduce(
+type State = {
+  items: TodosEntityState;
+};
+
+const initialTodos: TodosEntityState = todos.reduce(
   (acc, cur) => {
     acc.entities[cur.id] = cur;
     acc.ids.push(cur.id);
     return acc;
   },
-  { entities: {}, ids: [] } as State,
+  { entities: {}, ids: [] } as TodosEntityState,
 );
 
-const initialState: State = initialTodos;
+const initialState: State = { items: initialTodos };
 
 const todosSlice = createSlice({
   name: "Todos",
@@ -44,8 +47,8 @@ const todosSlice = createSlice({
         const id = crypto.randomUUID();
         const createdTodo = { id, ...action.payload };
 
-        state.entities[id] = createdTodo;
-        state.ids.push(id);
+        state.items.entities[id] = createdTodo;
+        state.items.ids.push(id);
       },
     );
 
@@ -53,12 +56,12 @@ const todosSlice = createSlice({
       (state, action: PayloadAction<{ id: TodoId }>) => {
         const { id } = action.payload;
 
-        delete state.entities[id];
+        delete state.items.entities[id];
 
-        const todoIndex = state.ids.findIndex((todoId) => todoId === id);
+        const todoIndex = state.items.ids.findIndex((todoId) => todoId === id);
         if (todoIndex === -1) return;
 
-        state.ids.splice(todoIndex, 1);
+        state.items.ids.splice(todoIndex, 1);
       },
     );
 
@@ -72,10 +75,10 @@ const todosSlice = createSlice({
       ) => {
         const { fields, id } = action.payload;
 
-        const todo = state.entities[id];
+        const todo = state.items.entities[id];
         if (!todo) return;
 
-        state.entities[id] = { ...todo, ...fields };
+        state.items.entities[id] = { ...todo, ...fields };
       },
     );
 
@@ -83,7 +86,7 @@ const todosSlice = createSlice({
       (state, action: PayloadAction<{ id: TodoId; completed?: boolean }>) => {
         const { id, completed } = action.payload;
 
-        const todo = state.entities[id];
+        const todo = state.items.entities[id];
         if (!todo) return;
 
         todo.completed = completed ?? !todo.completed;
@@ -93,12 +96,16 @@ const todosSlice = createSlice({
     return { createTodo, removeTodo, editTodo, toggleTodoCompleted };
   },
   selectors: {
-    todoEntities: (state: State) => state.entities,
-    todoIds: (state: State) => state.ids,
-    todoList: createSelector([(state: State) => state.entities], (entities) => {
-      return Object.values(entities);
-    }),
-    todoCompleted: (state: State, id: TodoId) => state.entities[id]?.completed,
+    todoEntities: (state: State) => state.items.entities,
+    todoIds: (state: State) => state.items.ids,
+    todoList: createSelector(
+      [(state: State) => state.items.entities],
+      (entities) => {
+        return Object.values(entities);
+      },
+    ),
+    todoCompleted: (state: State, id: TodoId) =>
+      state.items.entities[id]?.completed,
   },
 }).injectInto(rootReducer);
 
