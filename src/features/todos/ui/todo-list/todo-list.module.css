@@ -13,16 +13,6 @@
   font-size: 1.4rem;
 }
 
-.selectContainer {
+.sort {
   margin-bottom: 1rem;
-}
-
-.selectTrigger {
-  max-width: 12rem;
-  width: 100%;
-}
-
-.selectValue {
-  display: block;
-  text-overflow: ellipsis;
 }

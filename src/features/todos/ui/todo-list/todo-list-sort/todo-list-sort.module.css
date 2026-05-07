@@ -1,0 +1,9 @@
+.selectTrigger {
+  max-width: 12rem;
+  width: 100%;
+}
+
+.selectValue {
+  display: block;
+  text-overflow: ellipsis;
+}
