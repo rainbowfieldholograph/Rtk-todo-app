@@ -7,28 +7,37 @@ import {
   SelectItem,
 } from "~/shared/ui/kit/select";
 import { useAppSelector } from "../../../shared/redux";
-import { todosSlice, type SortField } from "../model/todos-slice";
+import {
+  todosSlice,
+  type SortField,
+  type SortOrder,
+} from "../model/todos-slice";
 import { TodoItem } from "./todo-item/todo-item";
 import { Field, FieldLabel } from "~/shared/ui/kit/field";
 import { useId } from "react";
 import { useDispatch } from "react-redux";
 import styles from "./todo-list.module.css";
 
-const selectItems = [
+const sortOrderSelectItems = [
+  { label: "По возрастанию", value: "asc" },
+  { label: "По убыванию", value: "desc" },
+] satisfies { label: string; value: SortOrder }[];
+
+const sortFieldSelectItems = [
   { label: "По названию", value: "title" },
   { label: "По статусу выполнения", value: "completed" },
   { label: "По описанию", value: "description" },
-] satisfies {
-  label: string;
-  value: SortField;
-}[];
+] satisfies { label: string; value: SortField }[];
 
 const TodoList = () => {
   const selectId = useId();
   const dispatch = useDispatch();
-  const todos = useAppSelector((state) => todosSlice.selectors.todoList(state));
+
   const selectedSort = useAppSelector((state) =>
     todosSlice.selectors.selectedSort(state),
+  );
+  const sortedTodos = useAppSelector((state) =>
+    todosSlice.selectors.sortedTodoList(state),
   );
 
   return (
@@ -38,12 +47,12 @@ const TodoList = () => {
         <Field>
           <FieldLabel htmlFor={selectId}>Сортировка:</FieldLabel>
           <Select
-            value={selectedSort}
-            onValueChange={(sort) => {
-              dispatch(todosSlice.actions.changeSort({ sort }));
+            value={selectedSort.field}
+            onValueChange={(field) => {
+              dispatch(todosSlice.actions.changeSort({ sort: { field } }));
             }}
             id={selectId}
-            items={selectItems}
+            items={sortFieldSelectItems}
           >
             <SelectTrigger className={styles.selectTrigger}>
               <SelectValue
@@ -51,9 +60,35 @@ const TodoList = () => {
                 placeholder="Выберите тип"
               />
             </SelectTrigger>
-            <SelectContent alignItemWithTrigger={false}>
+            <SelectContent>
               <SelectGroup>
-                {selectItems.map(({ label, value }) => (
+                {sortFieldSelectItems.map(({ label, value }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select
+            disabled={!selectedSort.field}
+            value={selectedSort.order}
+            onValueChange={(order) => {
+              if (!order) return;
+              dispatch(todosSlice.actions.changeSort({ sort: { order } }));
+            }}
+            id={selectId}
+            items={sortOrderSelectItems}
+          >
+            <SelectTrigger className={styles.selectTrigger}>
+              <SelectValue
+                className={styles.selectValue}
+                placeholder="Выберите порядок"
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {sortOrderSelectItems.map(({ label, value }) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>
@@ -64,7 +99,7 @@ const TodoList = () => {
         </Field>
       </div>
       <ul className={styles.list}>
-        {todos.map((todo) => (
+        {sortedTodos.map((todo) => (
           <li className={styles.listItem} key={todo.id}>
             <TodoItem todo={todo} />
           </li>

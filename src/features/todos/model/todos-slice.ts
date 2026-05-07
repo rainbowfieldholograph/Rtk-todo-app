@@ -19,11 +19,17 @@ type TodosEntityState = {
 };
 
 type SortField = keyof Pick<Todo, "completed" | "description" | "title">;
-type Sort = { field: SortField; order: "asc" | "desc" };
+type SortOrder = "asc" | "desc"; // Возрастание, убывание
+type Sort = { field: SortField | null; order: SortOrder };
 
 type State = {
-  selectedSort: Sort | null;
+  selectedSort: Sort;
   items: TodosEntityState;
+};
+
+const initialSort: Sort = {
+  field: null,
+  order: "asc",
 };
 
 const initialTodos: TodosEntityState = todos.reduce(
@@ -35,7 +41,23 @@ const initialTodos: TodosEntityState = todos.reduce(
   { entities: {}, ids: [] } as TodosEntityState,
 );
 
-const initialState: State = { items: initialTodos, selectedSort: null };
+const initialState = {
+  items: initialTodos,
+  selectedSort: initialSort,
+} satisfies State;
+
+const selectTodoList = createSelector(
+  [(state: State) => state.items.entities, (state: State) => state.items.ids],
+  (entities, ids) => {
+    return ids.map((id) => {
+      const todo = entities[id];
+      if (!todo) {
+        throw new Error(`Todo with id ${id} not found in entities`);
+      }
+      return todo;
+    });
+  },
+);
 
 const todosSlice = createSlice({
   name: "Todos",
@@ -98,9 +120,11 @@ const todosSlice = createSlice({
     );
 
     const changeSort = create.reducer(
-      (state, action: PayloadAction<{ sort: Sort | null }>) => {
-        console.log("new sort: ", action.payload.sort);
-        state.selectedSort = action.payload.sort;
+      (state, action: PayloadAction<{ sort: Partial<Sort> }>) => {
+        const { sort } = action.payload;
+
+        if (sort.field) state.selectedSort.field = sort.field;
+        if (sort.order) state.selectedSort.order = sort.order;
       },
     );
 
@@ -115,17 +139,38 @@ const todosSlice = createSlice({
   selectors: {
     todoEntities: (state: State) => state.items.entities,
     todoIds: (state: State) => state.items.ids,
-    todoList: createSelector(
-      [(state: State) => state.items.entities],
-      (entities) => {
-        return Object.values(entities);
-      },
-    ),
+    todoList: selectTodoList,
     todoCompleted: (state: State, id: TodoId) =>
       state.items.entities[id]?.completed,
     selectedSort: (state: State) => state.selectedSort,
+    sortedTodoList: createSelector(
+      [selectTodoList, (state: State) => state.selectedSort],
+      (todos, sort) => {
+        const { field, order } = sort;
+        if (!field) return todos;
+
+        const todoList = todos.toSorted((a, b) => {
+          const aValue = a[field];
+          const bValue = b[field];
+
+          if (typeof aValue === "string" && typeof bValue === "string") {
+            return order === "asc"
+              ? aValue.localeCompare(bValue)
+              : bValue.localeCompare(aValue);
+          }
+
+          if (typeof aValue === "boolean" && typeof bValue === "boolean") {
+            return order === "asc" ? +aValue - +bValue : +bValue - +aValue;
+          }
+
+          return 0;
+        });
+
+        return todoList;
+      },
+    ),
   },
 }).injectInto(rootReducer);
 
 export { todosSlice };
-export type { Todo, TodoId, SortField, Sort };
+export type { Todo, TodoId, SortField, Sort, SortOrder };
