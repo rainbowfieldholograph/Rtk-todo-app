@@ -12,6 +12,10 @@ type Todo = {
   title: string;
   description: string;
   completed: boolean;
+  /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
+  createdAt: string;
+  /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
+  updatedAt: string;
 };
 type TodosEntityState = {
   entities: Record<TodoId, Todo>;
@@ -71,7 +75,14 @@ const todosSlice = createSlice({
         >,
       ) => {
         const id = crypto.randomUUID();
-        const createdTodo = { id, ...action.payload };
+        const dateNowISO = new Date().toISOString();
+
+        const createdTodo: Todo = {
+          id,
+          ...action.payload,
+          createdAt: dateNowISO,
+          updatedAt: dateNowISO,
+        };
 
         state.items.entities[id] = createdTodo;
         state.items.ids.push(id);
@@ -104,7 +115,11 @@ const todosSlice = createSlice({
         const todo = state.items.entities[id];
         if (!todo) return;
 
-        state.items.entities[id] = { ...todo, ...fields };
+        state.items.entities[id] = {
+          ...todo,
+          ...fields,
+          updatedAt: new Date().toISOString(),
+        };
       },
     );
 

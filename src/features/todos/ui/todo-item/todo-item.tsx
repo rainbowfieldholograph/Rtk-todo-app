@@ -9,8 +9,9 @@ import {
   CardTitle,
 } from "~/shared/ui/kit/card";
 import { TodoEditor } from "../todo-editor";
-import styles from "./todo-item.module.css";
 import { TodoCompletedCheckbox } from "./todo-completed-checkbox";
+import { dateTimeFormatter } from "~/shared/lib/date";
+import styles from "./todo-item.module.css";
 
 namespace TodoItem {
   export type Props = { todo: Todo };
@@ -18,9 +19,15 @@ namespace TodoItem {
 
 const TodoItem = (props: TodoItem.Props) => {
   const { todo } = props;
-  const { id, title, description } = todo;
+  const { id, title, description, createdAt, updatedAt } = todo;
 
   const dispatch = useDispatch();
+
+  const isUpdated = updatedAt !== createdAt;
+  const createdAtFormatted = dateTimeFormatter.format(new Date(createdAt));
+  const updatedAtFormatted = isUpdated
+    ? dateTimeFormatter.format(new Date(updatedAt))
+    : null;
 
   const handleRemove = () => {
     dispatch(todosSlice.actions.removeTodo({ id }));
@@ -33,6 +40,10 @@ const TodoItem = (props: TodoItem.Props) => {
       </CardHeader>
       <CardContent>
         <div>{description}</div>
+        <div>Дата создания задачи: {createdAtFormatted}</div>
+        {updatedAtFormatted ? (
+          <div>Дата обновления задачи: {updatedAtFormatted}</div>
+        ) : null}
       </CardContent>
       <CardFooter>
         <div className={styles.footerStart}>
