@@ -115,4 +115,6 @@ const TodoListSort = memo(() => {
   );
 });
 
+TodoListSort.displayName = "TodoListSort";
+
 export { TodoListSort };
