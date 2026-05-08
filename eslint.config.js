@@ -20,6 +20,7 @@ export default defineConfig([
     },
     rules: {
       "@typescript-eslint/no-namespace": "off",
+      "react-refresh/only-export-components": "off",
     },
   },
 ]);
