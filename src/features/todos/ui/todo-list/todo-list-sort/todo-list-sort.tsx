@@ -20,14 +20,14 @@ const sortSelectItems = [
     label: "Сначала выполненные",
     sort: {
       field: "completed",
-      order: "asc",
+      order: "desc",
     },
   },
   {
     label: "Сначала не выполненные",
     sort: {
       field: "completed",
-      order: "desc",
+      order: "asc",
     },
   },
   { label: "По описанию (A-Z)", sort: { field: "description", order: "asc" } },
