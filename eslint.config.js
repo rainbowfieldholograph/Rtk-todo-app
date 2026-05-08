@@ -19,7 +19,7 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      "@typescript-eslint/no-namespace": false,
+      "@typescript-eslint/no-namespace": "off",
     },
   },
 ]);
