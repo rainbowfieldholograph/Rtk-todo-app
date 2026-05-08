@@ -1,6 +1,7 @@
 import { combineSlices } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AppState = any;
 
 const rootReducer = combineSlices();
