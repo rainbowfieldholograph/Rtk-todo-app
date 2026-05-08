@@ -87,7 +87,7 @@ const TodoListTypeSort = (props: TodoListTypeSort.Props) => {
           {() => selectedSelectOption?.label}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className={styles.selectContent} align="end">
         <SelectGroup>
           {sortSelectItems.map(({ label, sort }) => (
             <SelectItem key={sort.field + sort.order} value={sort}>
