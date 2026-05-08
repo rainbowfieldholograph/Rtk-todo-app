@@ -35,6 +35,35 @@ type State = {
   items: TodosEntityState;
 };
 
+const sortTodos = (todos: Todo[], sort: Sort) => {
+  const sortedTodos = todos.toSorted((a, b) => {
+    const { field, order } = sort;
+    const aValue = a[field];
+    const bValue = b[field];
+
+    if (field === "createdAt" || field === "updatedAt") {
+      const aDate = new Date(a[field]).getTime();
+      const bDate = new Date(b[field]).getTime();
+
+      return order === "asc" ? aDate - bDate : bDate - aDate;
+    }
+
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return order === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+
+    if (typeof aValue === "boolean" && typeof bValue === "boolean") {
+      return order === "asc" ? +aValue - +bValue : +bValue - +aValue;
+    }
+
+    return 0;
+  });
+
+  return sortedTodos;
+};
+
 const initialSort: Sort = { field: "createdAt", order: "asc" };
 
 const initialTodos: TodosEntityState = todos.reduce(
@@ -63,38 +92,6 @@ const selectTodoList = createSelector(
     });
   },
 );
-
-const sortTodos = (
-  todos: Todo[],
-  sortField: SortField,
-  sortOrder: SortOrder,
-) => {
-  const sortedTodos = todos.toSorted((a, b) => {
-    const aValue = a[sortField];
-    const bValue = b[sortField];
-
-    if (sortField === "createdAt" || sortField === "updatedAt") {
-      const aDate = new Date(a[sortField]).getTime();
-      const bDate = new Date(b[sortField]).getTime();
-
-      return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
-    }
-
-    if (typeof aValue === "string" && typeof bValue === "string") {
-      return sortOrder === "asc"
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
-    }
-
-    if (typeof aValue === "boolean" && typeof bValue === "boolean") {
-      return sortOrder === "asc" ? +aValue - +bValue : +bValue - +aValue;
-    }
-
-    return 0;
-  });
-
-  return sortedTodos;
-};
 
 const todosSlice = createSlice({
   name: "Todos",
@@ -189,12 +186,8 @@ const todosSlice = createSlice({
       state.items.entities[id]?.completed,
     selectedSort: (state: State) => state.selectedSort,
     sortedTodoList: createSelector(
-      [
-        selectTodoList,
-        (state: State) => state.selectedSort.field,
-        (state: State) => state.selectedSort.order,
-      ],
-      (todos, field, order) => (field ? sortTodos(todos, field, order) : todos),
+      [selectTodoList, (state: State) => state.selectedSort],
+      (todos, sort) => (sort.field ? sortTodos(todos, sort) : todos),
     ),
   },
 }).injectInto(rootReducer);
