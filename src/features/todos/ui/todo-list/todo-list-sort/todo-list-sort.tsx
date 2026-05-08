@@ -46,6 +46,7 @@ const TodoListTypeSort = (props: TodoListTypeSort.Props) => {
     <Select
       value={selectedSort.field}
       onValueChange={(field) => {
+        if (!field) return;
         dispatch(todosSlice.actions.changeSort({ sort: { field } }));
       }}
       id={selectId}

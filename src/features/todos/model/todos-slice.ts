@@ -28,14 +28,14 @@ type SortField = keyof Pick<
 >;
 /** asc: возрастание, desc: убывание */
 type SortOrder = "asc" | "desc";
-type Sort = { field: SortField | null; order: SortOrder };
+type Sort = { field: SortField; order: SortOrder };
 
 type State = {
   selectedSort: Sort;
   items: TodosEntityState;
 };
 
-const initialSort: Sort = { field: null, order: "asc" };
+const initialSort: Sort = { field: "createdAt", order: "asc" };
 
 const initialTodos: TodosEntityState = todos.reduce(
   (acc, cur) => {
@@ -169,10 +169,7 @@ const todosSlice = createSlice({
 
     const changeSort = create.reducer(
       (state, action: PayloadAction<{ sort: Partial<Sort> }>) => {
-        const { sort } = action.payload;
-
-        if (sort.field) state.selectedSort.field = sort.field;
-        if (sort.order) state.selectedSort.order = sort.order;
+        state.selectedSort = { ...state.selectedSort, ...action.payload.sort };
       },
     );
 
