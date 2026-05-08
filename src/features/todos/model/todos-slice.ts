@@ -189,6 +189,7 @@ const todosSlice = createSlice({
       [selectTodoList, (state: State) => state.selectedSort],
       (todos, sort) => (sort.field ? sortTodos(todos, sort) : todos),
     ),
+    todoById: (state: State, id: TodoId) => state.items.entities[id],
   },
 }).injectInto(rootReducer);
 

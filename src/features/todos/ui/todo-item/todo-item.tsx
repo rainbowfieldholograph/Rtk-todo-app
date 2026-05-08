@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { Button } from "~/shared/ui/kit/button";
-import { todosSlice, type Todo } from "../../model/todos-slice";
+import { todosSlice, type TodoId } from "../../model/todos-slice";
 import {
   Card,
   CardContent,
@@ -11,17 +11,26 @@ import {
 import { TodoEditor } from "../todo-editor";
 import { TodoCompletedCheckbox } from "./todo-completed-checkbox";
 import { dateTimeFormatter } from "~/shared/lib/date";
+import { useAppSelector } from "~/shared/redux";
+import { memo } from "react";
 import styles from "./todo-item.module.css";
 
 namespace TodoItem {
-  export type Props = { todo: Todo };
+  export type Props = { id: TodoId };
 }
 
-const TodoItem = (props: TodoItem.Props) => {
-  const { todo } = props;
-  const { id, title, description, createdAt, updatedAt } = todo;
-
+const TodoItem = memo((props: TodoItem.Props) => {
+  const { id } = props;
+  const todo = useAppSelector((state) =>
+    todosSlice.selectors.todoById(state, id),
+  );
   const dispatch = useDispatch();
+
+  if (!todo) {
+    throw new Error(`TodoItem component error. Todo with id ${id} not found.`);
+  }
+
+  const { updatedAt, createdAt, title, description } = todo;
 
   const isUpdated = updatedAt !== createdAt;
   const createdAtFormatted = dateTimeFormatter.format(new Date(createdAt));
@@ -58,6 +67,8 @@ const TodoItem = (props: TodoItem.Props) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+TodoItem.displayName = "TodoItem";
 
 export { TodoItem };

@@ -5,7 +5,7 @@ import { TodoListSort } from "./todo-list-sort/todo-list-sort";
 import styles from "./todo-list.module.css";
 
 const TodoList = () => {
-  const sortedTodos = useAppSelector((state) =>
+  const todos = useAppSelector((state) =>
     todosSlice.selectors.sortedTodoList(state),
   );
 
@@ -16,9 +16,9 @@ const TodoList = () => {
         <TodoListSort />
       </div>
       <ul className={styles.list}>
-        {sortedTodos.map((todo) => (
-          <li className={styles.listItem} key={todo.id}>
-            <TodoItem todo={todo} />
+        {todos.map(({ id }) => (
+          <li className={styles.listItem} key={id}>
+            <TodoItem id={id} />
           </li>
         ))}
       </ul>
