@@ -22,8 +22,12 @@ type TodosEntityState = {
   ids: TodoId[]; // Управляет порядком списка
 };
 
-type SortField = keyof Pick<Todo, "completed" | "description" | "title">;
-type SortOrder = "asc" | "desc"; // Возрастание, убывание
+type SortField = keyof Pick<
+  Todo,
+  "completed" | "description" | "title" | "createdAt" | "updatedAt"
+>;
+/** asc: возрастание, desc: убывание */
+type SortOrder = "asc" | "desc";
 type Sort = { field: SortField | null; order: SortOrder };
 
 type State = {
@@ -31,10 +35,7 @@ type State = {
   items: TodosEntityState;
 };
 
-const initialSort: Sort = {
-  field: null,
-  order: "asc",
-};
+const initialSort: Sort = { field: null, order: "asc" };
 
 const initialTodos: TodosEntityState = todos.reduce(
   (acc, cur) => {
@@ -62,6 +63,38 @@ const selectTodoList = createSelector(
     });
   },
 );
+
+const sortTodos = (
+  todos: Todo[],
+  sortField: SortField,
+  sortOrder: SortOrder,
+) => {
+  const sortedTodos = todos.toSorted((a, b) => {
+    const aValue = a[sortField];
+    const bValue = b[sortField];
+
+    if (sortField === "createdAt" || sortField === "updatedAt") {
+      const aDate = new Date(a[sortField]).getTime();
+      const bDate = new Date(b[sortField]).getTime();
+
+      return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
+    }
+
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return sortOrder === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+
+    if (typeof aValue === "boolean" && typeof bValue === "boolean") {
+      return sortOrder === "asc" ? +aValue - +bValue : +bValue - +aValue;
+    }
+
+    return 0;
+  });
+
+  return sortedTodos;
+};
 
 const todosSlice = createSlice({
   name: "Todos",
@@ -159,30 +192,12 @@ const todosSlice = createSlice({
       state.items.entities[id]?.completed,
     selectedSort: (state: State) => state.selectedSort,
     sortedTodoList: createSelector(
-      [selectTodoList, (state: State) => state.selectedSort],
-      (todos, sort) => {
-        const { field, order } = sort;
-        if (!field) return todos;
-
-        const todoList = todos.toSorted((a, b) => {
-          const aValue = a[field];
-          const bValue = b[field];
-
-          if (typeof aValue === "string" && typeof bValue === "string") {
-            return order === "asc"
-              ? aValue.localeCompare(bValue)
-              : bValue.localeCompare(aValue);
-          }
-
-          if (typeof aValue === "boolean" && typeof bValue === "boolean") {
-            return order === "asc" ? +aValue - +bValue : +bValue - +aValue;
-          }
-
-          return 0;
-        });
-
-        return todoList;
-      },
+      [
+        selectTodoList,
+        (state: State) => state.selectedSort.field,
+        (state: State) => state.selectedSort.order,
+      ],
+      (todos, field, order) => (field ? sortTodos(todos, field, order) : todos),
     ),
   },
 }).injectInto(rootReducer);

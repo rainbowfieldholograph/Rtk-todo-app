@@ -26,6 +26,8 @@ const sortFieldSelectItems = [
   { label: "По названию", value: "title" },
   { label: "По статусу выполнения", value: "completed" },
   { label: "По описанию", value: "description" },
+  { label: "По дате создания", value: "createdAt" },
+  { label: "По дате обновления", value: "updatedAt" },
 ] satisfies { label: string; value: SortField }[];
 
 namespace TodoListTypeSort {
