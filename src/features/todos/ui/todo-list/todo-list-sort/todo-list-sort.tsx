@@ -17,14 +17,14 @@ const sortSelectItems = [
   { label: "По названию (A-Z)", sort: { field: "title", order: "asc" } },
   { label: "По названию (Z-A)", sort: { field: "title", order: "desc" } },
   {
-    label: "По статусу выполнения (сначала выполненные)",
+    label: "Сначала выполненные",
     sort: {
       field: "completed",
       order: "asc",
     },
   },
   {
-    label: "По статусу выполнения (сначала не выполненные)",
+    label: "Сначала не выполненные",
     sort: {
       field: "completed",
       order: "desc",
@@ -36,20 +36,20 @@ const sortSelectItems = [
     sort: { field: "description", order: "desc" },
   },
   {
-    label: "По дате создания (сначала новые)",
+    label: "Сначала новые (по дате создания)",
     sort: { field: "createdAt", order: "asc" },
   },
   {
-    label: "По дате создания (сначала не выполненные)",
+    label: "Сначала старые (по дате создания)",
     sort: { field: "createdAt", order: "desc" },
   },
   {
-    label: "По дате обновления (сначала недавние)",
-    sort: { field: "createdAt", order: "asc" },
+    label: "Сначала новые (по дате обновления)",
+    sort: { field: "updatedAt", order: "asc" },
   },
   {
-    label: "По дате обновления (сначала старые)",
-    sort: { field: "createdAt", order: "desc" },
+    label: "Сначала старые (по дате обновления)",
+    sort: { field: "updatedAt", order: "desc" },
   },
 ] satisfies SortSelectItem[];
 
