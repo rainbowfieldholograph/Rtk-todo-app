@@ -1,10 +1,6 @@
-import { memo, useId } from "react";
+import { memo, useId, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import {
-  todosSlice,
-  type SortField,
-  type SortOrder,
-} from "~/features/todos/model/todos-slice";
+import { todosSlice, type Sort } from "~/features/todos/model/todos-slice";
 import { useAppSelector } from "~/shared/redux";
 import { Field, FieldLabel } from "~/shared/ui/kit/field";
 import {
@@ -17,18 +13,47 @@ import {
 } from "~/shared/ui/kit/select";
 import styles from "./todo-list-sort.module.css";
 
-const sortOrderSelectItems = [
-  { label: "По возрастанию", value: "asc" },
-  { label: "По убыванию", value: "desc" },
-] satisfies { label: string; value: SortOrder }[];
+const sortSelectItems = [
+  { label: "По названию (A-Z)", sort: { field: "title", order: "asc" } },
+  { label: "По названию (Z-A)", sort: { field: "title", order: "desc" } },
+  {
+    label: "По статусу выполнения (сначала выполненные)",
+    sort: {
+      field: "completed",
+      order: "asc",
+    },
+  },
+  {
+    label: "По статусу выполнения (сначала не выполненные)",
+    sort: {
+      field: "completed",
+      order: "desc",
+    },
+  },
+  { label: "По описанию (A-Z)", sort: { field: "description", order: "asc" } },
+  {
+    label: "По описанию (Z-A)",
+    sort: { field: "description", order: "desc" },
+  },
+  {
+    label: "По дате создания (сначала новые)",
+    sort: { field: "createdAt", order: "asc" },
+  },
+  {
+    label: "По дате создания (сначала не выполненные)",
+    sort: { field: "createdAt", order: "desc" },
+  },
+  {
+    label: "По дате обновления (сначала недавние)",
+    sort: { field: "createdAt", order: "asc" },
+  },
+  {
+    label: "По дате обновления (сначала старые)",
+    sort: { field: "createdAt", order: "desc" },
+  },
+] satisfies SortSelectItem[];
 
-const sortFieldSelectItems = [
-  { label: "По названию", value: "title" },
-  { label: "По статусу выполнения", value: "completed" },
-  { label: "По описанию", value: "description" },
-  { label: "По дате создания", value: "createdAt" },
-  { label: "По дате обновления", value: "updatedAt" },
-] satisfies { label: string; value: SortField }[];
+type SortSelectItem = { label: string; sort: Sort };
 
 namespace TodoListTypeSort {
   export type Props = { selectId: string };
@@ -40,63 +65,32 @@ const TodoListTypeSort = (props: TodoListTypeSort.Props) => {
   const selectedSort = useAppSelector((state) =>
     todosSlice.selectors.selectedSort(state),
   );
+  const selectedSelectOption = useMemo(() => {
+    return sortSelectItems.find(
+      ({ sort }) =>
+        sort.field === selectedSort.field && sort.order === selectedSort.order,
+    );
+  }, [selectedSort.field, selectedSort.order]);
   const dispatch = useDispatch();
 
   return (
     <Select
-      value={selectedSort.field}
-      onValueChange={(field) => {
-        if (!field) return;
-        dispatch(todosSlice.actions.changeSort({ sort: { field } }));
+      value={selectedSort}
+      onValueChange={(sort) => {
+        if (!sort) return;
+        dispatch(todosSlice.actions.changeSort({ sort }));
       }}
       id={selectId}
-      items={sortFieldSelectItems}
     >
       <SelectTrigger className={styles.selectTrigger}>
-        <SelectValue
-          className={styles.selectValue}
-          placeholder="Выберите тип"
-        />
+        <SelectValue className={styles.selectValue} placeholder="Выберите тип">
+          {() => selectedSelectOption?.label}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {sortFieldSelectItems.map(({ label, value }) => (
-            <SelectItem key={value} value={value}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  );
-};
-
-const TodoListOrderSort = () => {
-  const selectedSort = useAppSelector((state) =>
-    todosSlice.selectors.selectedSort(state),
-  );
-  const dispatch = useDispatch();
-
-  return (
-    <Select
-      disabled={!selectedSort.field}
-      value={selectedSort.order}
-      onValueChange={(order) => {
-        if (!order) return;
-        dispatch(todosSlice.actions.changeSort({ sort: { order } }));
-      }}
-      items={sortOrderSelectItems}
-    >
-      <SelectTrigger className={styles.selectTrigger}>
-        <SelectValue
-          className={styles.selectValue}
-          placeholder="Выберите порядок"
-        />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {sortOrderSelectItems.map(({ label, value }) => (
-            <SelectItem key={value} value={value}>
+          {sortSelectItems.map(({ label, sort }) => (
+            <SelectItem key={sort.field + sort.order} value={sort}>
               {label}
             </SelectItem>
           ))}
@@ -113,7 +107,6 @@ const TodoListSort = memo(() => {
     <Field>
       <FieldLabel htmlFor={selectId}>Сортировка:</FieldLabel>
       <TodoListTypeSort selectId={selectId} />
-      <TodoListOrderSort />
     </Field>
   );
 });
