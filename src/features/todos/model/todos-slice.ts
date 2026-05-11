@@ -7,6 +7,9 @@ import {
 import { rootReducer } from "../../../shared/redux";
 import todos from "../config/mock-todos.json" with { type: "json" };
 
+type Search = { field: SearchField; value: string };
+type SearchField = keyof Pick<Todo, "description" | "title">;
+
 type Sort = { field: SortField; order: SortOrder };
 type SortField = keyof Pick<
   Todo,
@@ -17,6 +20,7 @@ type SortOrder = "asc" | "desc";
 
 type State = {
   items: TodosEntityState;
+  search: Search;
   selectedSort: Sort;
 };
 type Todo = {
@@ -66,7 +70,7 @@ const sortTodos = (todos: Todo[], sort: Sort) => {
 };
 
 const initialSort: Sort = { field: "createdAt", order: "asc" };
-
+const initialSearch: Search = { field: "title", value: "" };
 const initialTodos: TodosEntityState = todos.reduce(
   (acc, cur) => {
     acc.entities[cur.id] = cur;
@@ -78,6 +82,7 @@ const initialTodos: TodosEntityState = todos.reduce(
 
 const initialState = {
   items: initialTodos,
+  search: initialSearch,
   selectedSort: initialSort,
 } satisfies State;
 
@@ -92,6 +97,11 @@ const selectTodoList = createSelector(
       return todo;
     });
   },
+);
+
+const selectSortedTodoList = createSelector(
+  [selectTodoList, (state: State) => state.selectedSort],
+  (todos, sort) => (sort.field ? sortTodos(todos, sort) : todos),
 );
 
 const todosSlice = createSlice({
@@ -155,7 +165,7 @@ const todosSlice = createSlice({
     );
 
     const toggleTodoCompleted = create.reducer(
-      (state, action: PayloadAction<{ completed?: boolean; id: TodoId; }>) => {
+      (state, action: PayloadAction<{ completed?: boolean; id: TodoId }>) => {
         const { completed, id } = action.payload;
 
         const todo = state.items.entities[id];
@@ -171,26 +181,42 @@ const todosSlice = createSlice({
       },
     );
 
+    const updateSearch = create.reducer(
+      (state, action: PayloadAction<{ search: Partial<Search> }>) => {
+        const { search } = action.payload;
+
+        if (search.value !== undefined) state.search.value = search.value;
+        if (search.field !== undefined) state.search.field = search.field;
+      },
+    );
+
     return {
       changeSort,
       createTodo,
       editTodo,
       removeTodo,
       toggleTodoCompleted,
+      updateSearch,
     };
   },
   selectors: {
+    search: (state: State) => state.search,
     selectedSort: (state: State) => state.selectedSort,
-    sortedTodoList: createSelector(
-      [selectTodoList, (state: State) => state.selectedSort],
-      (todos, sort) => (sort.field ? sortTodos(todos, sort) : todos),
-    ),
+    sortedTodoList: selectSortedTodoList,
     todoById: (state: State, id: TodoId) => state.items.entities[id],
     todoCompleted: (state: State, id: TodoId) =>
       state.items.entities[id]?.completed,
     todoEntities: (state: State) => state.items.entities,
     todoIds: (state: State) => state.items.ids,
     todoList: selectTodoList,
+    visibleTodos: createSelector(
+      [selectSortedTodoList, (state: State) => state.search],
+      (sortedTodos, search) => {
+        return sortedTodos.filter((todo) => {
+          return todo[search.field].includes(search.value);
+        });
+      },
+    ),
   },
 }).injectInto(rootReducer);
 
