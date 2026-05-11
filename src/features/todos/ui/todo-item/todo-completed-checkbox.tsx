@@ -1,9 +1,11 @@
-import { Checkbox } from "~/shared/ui/kit/checkbox";
-import { todosSlice, type TodoId } from "../../model/todos-slice";
-import { useAppSelector } from "~/shared/redux";
-import { useDispatch } from "react-redux";
-import { Field, FieldLabel } from "~/shared/ui/kit/field";
 import { useId } from "react";
+import { useDispatch } from "react-redux";
+
+import { useAppSelector } from "~/shared/redux";
+import { Checkbox } from "~/shared/ui/kit/checkbox";
+import { Field, FieldLabel } from "~/shared/ui/kit/field";
+
+import { type TodoId, todosSlice } from "../../model/todos-slice";
 import styles from "./todo-completed-checkbox.module.css";
 
 namespace TodoCompletedCheckbox {
@@ -29,8 +31,8 @@ const TodoCompletedCheckbox = (props: TodoCompletedCheckbox.Props) => {
     <Field className={styles.field} orientation="horizontal">
       <FieldLabel htmlFor={checkboxId}>Задача выполнена:</FieldLabel>
       <Checkbox
-        id={checkboxId}
         checked={completed}
+        id={checkboxId}
         onCheckedChange={handleToggleCompleted}
       />
     </Field>

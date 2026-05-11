@@ -1,6 +1,9 @@
+import { memo } from "react";
 import { useDispatch } from "react-redux";
+
+import { dateTimeFormatter } from "~/shared/lib/date";
+import { useAppSelector } from "~/shared/redux";
 import { Button } from "~/shared/ui/kit/button";
-import { todosSlice, type TodoId } from "../../model/todos-slice";
 import {
   Card,
   CardContent,
@@ -8,11 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "~/shared/ui/kit/card";
+
+import { type TodoId, todosSlice } from "../../model/todos-slice";
 import { TodoEditor } from "../todo-editor";
 import { TodoCompletedCheckbox } from "./todo-completed-checkbox";
-import { dateTimeFormatter } from "~/shared/lib/date";
-import { useAppSelector } from "~/shared/redux";
-import { memo } from "react";
 import styles from "./todo-item.module.css";
 
 namespace TodoItem {
@@ -30,7 +32,7 @@ const TodoItem = memo((props: TodoItem.Props) => {
     throw new Error(`TodoItem component error. Todo with id ${id} not found.`);
   }
 
-  const { updatedAt, createdAt, title, description } = todo;
+  const { createdAt, description, title, updatedAt } = todo;
 
   const isUpdated = updatedAt !== createdAt;
   const createdAtFormatted = dateTimeFormatter.format(new Date(createdAt));
@@ -56,7 +58,7 @@ const TodoItem = memo((props: TodoItem.Props) => {
       </CardContent>
       <CardFooter>
         <div className={styles.footerStart}>
-          <Button variant="destructive" onClick={handleRemove}>
+          <Button onClick={handleRemove} variant="destructive">
             Удалить
           </Button>
           <TodoEditor todo={todo} />

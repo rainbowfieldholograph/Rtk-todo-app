@@ -1,6 +1,7 @@
 import { memo, useId, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { todosSlice, type Sort } from "~/features/todos/model/todos-slice";
+
+import { type Sort, todosSlice } from "~/features/todos/model/todos-slice";
 import { useAppSelector } from "~/shared/redux";
 import { Field, FieldLabel } from "~/shared/ui/kit/field";
 import {
@@ -11,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/shared/ui/kit/select";
+
 import styles from "./todo-list-sort.module.css";
 
 const sortSelectItems = [
@@ -75,19 +77,19 @@ const TodoListTypeSort = (props: TodoListTypeSort.Props) => {
 
   return (
     <Select
-      value={selectedSort}
+      id={selectId}
       onValueChange={(sort) => {
         if (!sort) return;
         dispatch(todosSlice.actions.changeSort({ sort }));
       }}
-      id={selectId}
+      value={selectedSort}
     >
       <SelectTrigger className={styles.selectTrigger}>
         <SelectValue className={styles.selectValue} placeholder="Выберите тип">
           {() => selectedSelectOption?.label}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className={styles.selectContent} align="end">
+      <SelectContent align="end" className={styles.selectContent}>
         <SelectGroup>
           {sortSelectItems.map(({ label, sort }) => (
             <SelectItem key={sort.field + sort.order} value={sort}>

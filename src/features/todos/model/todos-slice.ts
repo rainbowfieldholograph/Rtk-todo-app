@@ -3,36 +3,37 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
+
 import { rootReducer } from "../../../shared/redux";
 import todos from "../config/mock-todos.json" with { type: "json" };
 
-type TodoId = string;
-type Todo = {
-  id: TodoId;
-  title: string;
-  description: string;
-  completed: boolean;
-  /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
-  createdAt: string;
-  /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
-  updatedAt: string;
-};
-type TodosEntityState = {
-  entities: Record<TodoId, Todo>;
-  ids: TodoId[]; // Управляет порядком списка
-};
-
+type Sort = { field: SortField; order: SortOrder };
 type SortField = keyof Pick<
   Todo,
-  "completed" | "description" | "title" | "createdAt" | "updatedAt"
+  "completed" | "createdAt" | "description" | "title" | "updatedAt"
 >;
 /** asc: возрастание, desc: убывание */
 type SortOrder = "asc" | "desc";
-type Sort = { field: SortField; order: SortOrder };
 
 type State = {
-  selectedSort: Sort;
   items: TodosEntityState;
+  selectedSort: Sort;
+};
+type Todo = {
+  completed: boolean;
+  /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
+  createdAt: string;
+  description: string;
+  id: TodoId;
+  title: string;
+  /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
+  updatedAt: string;
+};
+type TodoId = string;
+
+type TodosEntityState = {
+  entities: Record<TodoId, Todo>;
+  ids: TodoId[]; // Управляет порядком списка
 };
 
 const sortTodos = (todos: Todo[], sort: Sort) => {
@@ -94,14 +95,14 @@ const selectTodoList = createSelector(
 );
 
 const todosSlice = createSlice({
-  name: "Todos",
   initialState,
+  name: "Todos",
   reducers: (create) => {
     const createTodo = create.reducer(
       (
         state,
         action: PayloadAction<
-          Pick<Todo, "title" | "completed" | "description">
+          Pick<Todo, "completed" | "description" | "title">
         >,
       ) => {
         const id = crypto.randomUUID();
@@ -136,8 +137,8 @@ const todosSlice = createSlice({
       (
         state,
         action: PayloadAction<{
+          fields: Partial<Pick<Todo, "completed" | "description" | "title">>;
           id: TodoId;
-          fields: Partial<Pick<Todo, "title" | "description" | "completed">>;
         }>,
       ) => {
         const { fields, id } = action.payload;
@@ -154,8 +155,8 @@ const todosSlice = createSlice({
     );
 
     const toggleTodoCompleted = create.reducer(
-      (state, action: PayloadAction<{ id: TodoId; completed?: boolean }>) => {
-        const { id, completed } = action.payload;
+      (state, action: PayloadAction<{ completed?: boolean; id: TodoId; }>) => {
+        const { completed, id } = action.payload;
 
         const todo = state.items.entities[id];
         if (!todo) return;
@@ -171,27 +172,27 @@ const todosSlice = createSlice({
     );
 
     return {
-      createTodo,
-      removeTodo,
-      editTodo,
-      toggleTodoCompleted,
       changeSort,
+      createTodo,
+      editTodo,
+      removeTodo,
+      toggleTodoCompleted,
     };
   },
   selectors: {
-    todoEntities: (state: State) => state.items.entities,
-    todoIds: (state: State) => state.items.ids,
-    todoList: selectTodoList,
-    todoCompleted: (state: State, id: TodoId) =>
-      state.items.entities[id]?.completed,
     selectedSort: (state: State) => state.selectedSort,
     sortedTodoList: createSelector(
       [selectTodoList, (state: State) => state.selectedSort],
       (todos, sort) => (sort.field ? sortTodos(todos, sort) : todos),
     ),
     todoById: (state: State, id: TodoId) => state.items.entities[id],
+    todoCompleted: (state: State, id: TodoId) =>
+      state.items.entities[id]?.completed,
+    todoEntities: (state: State) => state.items.entities,
+    todoIds: (state: State) => state.items.ids,
+    todoList: selectTodoList,
   },
 }).injectInto(rootReducer);
 
 export { todosSlice };
-export type { Todo, TodoId, SortField, Sort, SortOrder };
+export type { Sort, SortField, SortOrder, Todo, TodoId };

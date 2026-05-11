@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
+
+import { type Todo, todosSlice } from "../model/todos-slice";
 import { TodoForm } from "./todo-form";
-import { todosSlice, type Todo } from "../model/todos-slice";
 
 namespace TodoEditor {
   export type Props = { todo: Todo };
@@ -8,22 +9,22 @@ namespace TodoEditor {
 
 const TodoEditor = (props: TodoEditor.Props) => {
   const { todo } = props;
-  const { id, title, description, completed } = todo;
+  const { completed, description, id, title } = todo;
 
   const dispatch = useDispatch();
 
   const handleSubmit: TodoForm.Props["onSubmit"] = async (fields) => {
-    dispatch(todosSlice.actions.editTodo({ id, fields }));
+    dispatch(todosSlice.actions.editTodo({ fields, id }));
   };
 
   return (
     <TodoForm
-      triggerLabel="Редактировать"
-      title="Редактировать задачу"
       description="Измените поля задачи"
-      submitLabel="Редактировать"
+      initialValues={{ completed, description, title }}
       onSubmit={handleSubmit}
-      initialValues={{ completed, title, description }}
+      submitLabel="Редактировать"
+      title="Редактировать задачу"
+      triggerLabel="Редактировать"
     />
   );
 };
