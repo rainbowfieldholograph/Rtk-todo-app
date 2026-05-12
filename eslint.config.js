@@ -23,6 +23,11 @@ export default defineConfig([
     rules: {
       "@typescript-eslint/no-namespace": "off",
       "react-refresh/only-export-components": "off",
+      "perfectionist/sort-imports": ["warn"],
+      "perfectionist/sort-jsx-props": ["warn"],
+      "perfectionist/sort-object-types": ["warn"],
+      "perfectionist/sort-modules": ["warn"],
+      "perfectionist/sort-objects": ["warn"],
     },
   },
 ]);

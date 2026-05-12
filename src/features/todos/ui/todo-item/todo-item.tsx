@@ -51,9 +51,9 @@ const TodoItem = memo((props: TodoItem.Props) => {
       </CardHeader>
       <CardContent>
         <div>{description}</div>
-        <div>Дата создания задачи: {createdAtFormatted}</div>
+        <div>Дата создания: {createdAtFormatted}</div>
         {updatedAtFormatted ? (
-          <div>Дата обновления задачи: {updatedAtFormatted}</div>
+          <div>Дата обновления: {updatedAtFormatted}</div>
         ) : null}
       </CardContent>
       <CardFooter>
