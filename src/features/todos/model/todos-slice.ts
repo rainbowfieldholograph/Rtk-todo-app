@@ -116,6 +116,14 @@ const selectTodoFuse = createSelector(
   },
 );
 
+const selectVisibleTodos = createSelector(
+  [selectTodoFuse, (state: State) => state.search],
+  (todoFuse, search) => {
+    if (!search.value) return todoFuse.getIndex().docs;
+    return todoFuse.search(search.value).map(({ item }) => item);
+  },
+);
+
 const todosSlice = createSlice({
   initialState,
   name: "Todos",
@@ -221,12 +229,10 @@ const todosSlice = createSlice({
     todoEntities: (state: State) => state.items.entities,
     todoIds: (state: State) => state.items.ids,
     todoList: selectTodoList,
-    visibleTodos: createSelector(
-      [selectTodoFuse, (state: State) => state.search],
-      (todoFuse, search) => {
-        if (!search.value) return todoFuse.getIndex().docs;
-        return todoFuse.search(search.value).map(({ item }) => item);
-      },
+    visibleTodos: selectVisibleTodos,
+    visibleTodosCount: createSelector(
+      [selectVisibleTodos],
+      (visibleTodos) => visibleTodos.length,
     ),
   },
 }).injectInto(rootReducer);

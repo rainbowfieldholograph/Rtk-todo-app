@@ -6,6 +6,14 @@ import { TodoListSearch } from "./todo-list-search/todo-list-search";
 import { TodoListSort } from "./todo-list-sort/todo-list-sort";
 import styles from "./todo-list.module.css";
 
+const TodoListTitle = () => {
+  const todosCount = useAppSelector((state) =>
+    todosSlice.selectors.visibleTodosCount(state),
+  );
+
+  return <h2 className={styles.title}>Список задач ({todosCount}): </h2>;
+};
+
 const TodoList = () => {
   const todos = useAppSelector((state) =>
     todosSlice.selectors.visibleTodos(state),
@@ -13,7 +21,7 @@ const TodoList = () => {
 
   return (
     <section>
-      <h2 className={styles.title}>Список задач: </h2>
+      <TodoListTitle />
       <div className={styles.sort}>
         <TodoListSort />
       </div>
