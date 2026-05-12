@@ -3,6 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
+import Fuse from "fuse.js";
 
 import { rootReducer } from "../../../shared/redux";
 import todos from "../config/mock-todos.json" with { type: "json" };
@@ -102,6 +103,17 @@ const selectTodoList = createSelector(
 const selectSortedTodoList = createSelector(
   [selectTodoList, (state: State) => state.selectedSort],
   (todos, sort) => (sort.field ? sortTodos(todos, sort) : todos),
+);
+
+const selectTodoFuse = createSelector(
+  [selectSortedTodoList, (state: State) => state.search.field],
+  (todos, field) => {
+    return new Fuse(todos, {
+      ignoreLocation: true,
+      keys: [field],
+      threshold: 0.3,
+    });
+  },
 );
 
 const todosSlice = createSlice({
@@ -210,11 +222,10 @@ const todosSlice = createSlice({
     todoIds: (state: State) => state.items.ids,
     todoList: selectTodoList,
     visibleTodos: createSelector(
-      [selectSortedTodoList, (state: State) => state.search],
-      (sortedTodos, search) => {
-        return sortedTodos.filter((todo) => {
-          return todo[search.field].includes(search.value);
-        });
+      [selectTodoFuse, (state: State) => state.search],
+      (todoFuse, search) => {
+        if (!search.value) return todoFuse.getIndex().docs;
+        return todoFuse.search(search.value).map(({ item }) => item);
       },
     ),
   },
