@@ -22,6 +22,7 @@ export default defineConfig([
     },
     rules: {
       "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
       "react-refresh/only-export-components": "off",
       "perfectionist/sort-imports": ["warn"],
       "perfectionist/sort-jsx-props": ["warn"],
