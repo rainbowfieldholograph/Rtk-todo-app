@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { memo, useId } from "react";
 import { useDispatch } from "react-redux";
 
 import { todosSlice } from "~/features/todos/model/todos-slice";
@@ -8,28 +8,45 @@ import { Input } from "~/shared/ui/kit/input";
 
 import styles from "./todo-list-search.module.css";
 
-export const TodoListSearch = () => {
+namespace TodoListSearchInput {
+  export type Props = { inputId: string };
+}
+
+const TodoListSearchInput = (props: TodoListSearchInput.Props) => {
+  const { inputId } = props;
+
   const dispatch = useDispatch();
   const search = useAppSelector(todosSlice.selectors.search);
+
+  return (
+    <Input
+      className={styles.searchInput}
+      id={inputId}
+      onChange={(event) => {
+        dispatch(
+          todosSlice.actions.updateSearch({
+            search: { value: event.currentTarget.value },
+          }),
+        );
+      }}
+      placeholder="Введите текст для поиска..."
+      type="text"
+      value={search.value}
+    />
+  );
+};
+
+const TodoListSearch = memo(() => {
   const inputId = useId();
 
   return (
     <Field>
       <FieldLabel htmlFor={inputId}>Поиск задачи: </FieldLabel>
-      <Input
-        className={styles.searchInput}
-        id={inputId}
-        onChange={(event) => {
-          dispatch(
-            todosSlice.actions.updateSearch({
-              search: { value: event.currentTarget.value },
-            }),
-          );
-        }}
-        placeholder="Введите текст для поиска..."
-        type="text"
-        value={search.value}
-      />
+      <TodoListSearchInput inputId={inputId} />
     </Field>
   );
-};
+});
+
+TodoListSearch.displayName = "TodoListSearch";
+
+export { TodoListSearch };
