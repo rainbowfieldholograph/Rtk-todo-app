@@ -1,4 +1,4 @@
-import { memo, useId, useMemo } from "react";
+import { useId, useMemo } from "react";
 import { useDispatch } from "react-redux";
 
 import { type Sort, todosSlice } from "~/features/todos/model/todos-slice";
@@ -102,7 +102,7 @@ const TodoListTypeSort = (props: TodoListTypeSort.Props) => {
   );
 };
 
-const TodoListSort = memo(() => {
+const TodoListSort = () => {
   const selectId = useId();
 
   return (
@@ -111,8 +111,6 @@ const TodoListSort = memo(() => {
       <TodoListTypeSort selectId={selectId} />
     </Field>
   );
-});
-
-TodoListSort.displayName = "TodoListSort";
+};
 
 export { TodoListSort };
