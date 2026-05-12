@@ -1,4 +1,4 @@
-import { memo, useId } from "react";
+import { useId } from "react";
 import { useDispatch } from "react-redux";
 
 import { todosSlice } from "~/features/todos/model/todos-slice";
@@ -36,7 +36,7 @@ const TodoListSearchInput = (props: TodoListSearchInput.Props) => {
   );
 };
 
-const TodoListSearch = memo(() => {
+const TodoListSearch = () => {
   const inputId = useId();
 
   return (
@@ -45,8 +45,6 @@ const TodoListSearch = memo(() => {
       <TodoListSearchInput inputId={inputId} />
     </Field>
   );
-});
-
-TodoListSearch.displayName = "TodoListSearch";
+};
 
 export { TodoListSearch };

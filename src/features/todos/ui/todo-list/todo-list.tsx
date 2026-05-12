@@ -6,6 +6,18 @@ import { TodoListSearch } from "./todo-list-search/todo-list-search";
 import { TodoListSort } from "./todo-list-sort/todo-list-sort";
 import styles from "./todo-list.module.css";
 
+const TodoListItems = () => {
+  const todos = useAppSelector((state) =>
+    todosSlice.selectors.visibleTodos(state),
+  );
+
+  return todos.map(({ id }) => (
+    <li className={styles.listItem} key={id}>
+      <TodoItem id={id} />
+    </li>
+  ));
+};
+
 const TodoListTitle = () => {
   const todosCount = useAppSelector((state) =>
     todosSlice.selectors.visibleTodosCount(state),
@@ -15,10 +27,6 @@ const TodoListTitle = () => {
 };
 
 const TodoList = () => {
-  const todos = useAppSelector((state) =>
-    todosSlice.selectors.visibleTodos(state),
-  );
-
   return (
     <section>
       <TodoListTitle />
@@ -29,11 +37,7 @@ const TodoList = () => {
         <TodoListSearch />
       </div>
       <ul className={styles.list}>
-        {todos.map(({ id }) => (
-          <li className={styles.listItem} key={id}>
-            <TodoItem id={id} />
-          </li>
-        ))}
+        <TodoListItems />
       </ul>
     </section>
   );
