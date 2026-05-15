@@ -2,7 +2,7 @@ import { TodoCreator } from "../ui/todo-creator";
 import { TodoList } from "../ui/todo-list/todo-list";
 import styles from "./todo-list-page.module.css";
 
-export const TodoListPage = () => {
+const TodoListPage = () => {
   return (
     <div>
       <div className={styles.creator}>
@@ -12,3 +12,5 @@ export const TodoListPage = () => {
     </div>
   );
 };
+
+export { TodoListPage };
