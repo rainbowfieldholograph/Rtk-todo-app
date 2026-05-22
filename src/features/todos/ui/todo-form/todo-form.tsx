@@ -12,15 +12,15 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "~/shared/ui/kit/field";
 import { Input } from "~/shared/ui/kit/input";
 import { Textarea } from "~/shared/ui/kit/textarea";
 
-import type { Todo } from "../model/todos-slice";
+import type { Todo } from "../../model/todos-slice";
 
 import styles from "./todo-form.module.css";
 
 type RenderTrigger = ComponentProps<typeof DialogTrigger>["render"];
 type TodoFields = Pick<Todo, "completed" | "description" | "title">;
 type TriggerProps =
-  | { renderTrigger: RenderTrigger; triggerLabel?: never; }
-  | { renderTrigger?: never; triggerLabel: string; };
+  | { renderTrigger: RenderTrigger; triggerLabel?: never }
+  | { renderTrigger?: never; triggerLabel: string };
 
 namespace TodoForm {
   export type Props = TriggerProps & {

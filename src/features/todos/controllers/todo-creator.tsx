@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 
 import { todosSlice } from "../model/todos-slice";
-import { TodoForm } from "./todo-form";
+import { TodoForm } from "../ui/todo-form/todo-form";
 
 const TodoCreator = () => {
   const dispatch = useDispatch();

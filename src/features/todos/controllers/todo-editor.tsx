@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 
 import { type Todo, todosSlice } from "../model/todos-slice";
-import { TodoForm } from "./todo-form";
+import { TodoForm } from "../ui/todo-form/todo-form";
 
 namespace TodoEditor {
   export type Props = { todo: Todo };
