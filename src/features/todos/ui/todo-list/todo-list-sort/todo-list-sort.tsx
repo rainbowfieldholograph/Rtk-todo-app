@@ -1,8 +1,5 @@
 import { useId, useMemo } from "react";
-import { useDispatch } from "react-redux";
 
-import { type Sort, todosSlice } from "~/features/todos/model/todos-slice";
-import { useAppSelector } from "~/shared/redux";
 import { Field, FieldLabel } from "~/shared/ui/kit/field";
 import {
   Select,
@@ -13,6 +10,7 @@ import {
   SelectValue,
 } from "~/shared/ui/kit/select";
 
+import { type Sort } from "../../../model/todos-slice";
 import styles from "./todo-list-sort.module.css";
 
 const sortSelectItems = [
@@ -57,58 +55,53 @@ const sortSelectItems = [
 
 type SortSelectItem = { label: string; sort: Sort };
 
-namespace TodoListTypeSort {
-  export type Props = { selectId: string };
+namespace TodoListSort {
+  export type Props = {
+    onSelectedSortChange: (options: { sort: Sort }) => void;
+    selectedSort: Sort;
+  };
 }
 
-const TodoListTypeSort = (props: TodoListTypeSort.Props) => {
-  const { selectId } = props;
+const TodoListSort = (props: TodoListSort.Props) => {
+  const { onSelectedSortChange, selectedSort } = props;
+  const selectId = useId();
 
-  const selectedSort = useAppSelector((state) =>
-    todosSlice.selectors.selectedSort(state),
-  );
   const selectedSelectOption = useMemo(() => {
     return sortSelectItems.find(
       ({ sort }) =>
         sort.field === selectedSort.field && sort.order === selectedSort.order,
     );
   }, [selectedSort.field, selectedSort.order]);
-  const dispatch = useDispatch();
-
-  return (
-    <Select
-      id={selectId}
-      onValueChange={(sort) => {
-        if (!sort) return;
-        dispatch(todosSlice.actions.changeSort({ sort }));
-      }}
-      value={selectedSort}
-    >
-      <SelectTrigger className={styles.selectTrigger}>
-        <SelectValue className={styles.selectValue} placeholder="Выберите тип">
-          {() => selectedSelectOption?.label}
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent align="end" className={styles.selectContent}>
-        <SelectGroup>
-          {sortSelectItems.map(({ label, sort }) => (
-            <SelectItem key={sort.field + sort.order} value={sort}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  );
-};
-
-const TodoListSort = () => {
-  const selectId = useId();
 
   return (
     <Field>
       <FieldLabel htmlFor={selectId}>Сортировка:</FieldLabel>
-      <TodoListTypeSort selectId={selectId} />
+      <Select
+        id={selectId}
+        onValueChange={(sort) => {
+          if (!sort) return;
+          onSelectedSortChange({ sort });
+        }}
+        value={selectedSort}
+      >
+        <SelectTrigger className={styles.selectTrigger}>
+          <SelectValue
+            className={styles.selectValue}
+            placeholder="Выберите тип"
+          >
+            {() => selectedSelectOption?.label}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent align="end" className={styles.selectContent}>
+          <SelectGroup>
+            {sortSelectItems.map(({ label, sort }) => (
+              <SelectItem key={sort.field + sort.order} value={sort}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </Field>
   );
 };

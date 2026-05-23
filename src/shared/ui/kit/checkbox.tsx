@@ -4,6 +4,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 
 import { cn } from "~/shared/lib/css";
 
+namespace Checkbox {
+  export type Props = CheckboxPrimitive.Root.Props;
+}
+
 function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
   return (
     <CheckboxPrimitive.Root
