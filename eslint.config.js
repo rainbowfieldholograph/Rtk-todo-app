@@ -5,6 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import perfectionist from "eslint-plugin-perfectionist";
 import { defineConfig, globalIgnores } from "eslint/config";
+import { eslintBoundariesConfig } from "./eslint.boundaries.js";
 
 export default defineConfig([
   globalIgnores(["dist"]),
@@ -16,6 +17,7 @@ export default defineConfig([
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
       perfectionist.configs["recommended-natural"],
+      eslintBoundariesConfig,
     ],
     languageOptions: {
       globals: globals.browser,
@@ -29,6 +31,10 @@ export default defineConfig([
       "perfectionist/sort-object-types": ["warn"],
       "perfectionist/sort-modules": ["warn"],
       "perfectionist/sort-objects": ["warn"],
+      "perfectionist/sort-named-imports": ["warn"],
+      "perfectionist/sort-named-exports": ["warn"],
+      "perfectionist/sort-union-types": ["warn"],
+      "perfectionist/sort-exports": ["warn"],
     },
   },
 ]);
