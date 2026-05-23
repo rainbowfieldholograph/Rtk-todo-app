@@ -5,6 +5,7 @@ import { useAppSelector } from "~/shared/redux";
 
 import { type TodoId, todosSlice } from "../model/todos-slice";
 import { TodoItemUi } from "../ui/todo-item";
+import { TodoEditor } from "./todo-editor";
 
 namespace TodoItemCompletedCheckbox {
   export type Props = { id: TodoId };
@@ -60,7 +61,7 @@ const TodoItem = memo((props: TodoItem.Props) => {
       onRemove={handleRemove}
       title={title}
       todoCompletedSlot={<TodoItemCompletedCheckbox id={id} />}
-      todoEditorSlot={null}
+      todoEditorSlot={<TodoEditor todo={todo} />}
       updatedAt={updatedAt}
     />
   );
