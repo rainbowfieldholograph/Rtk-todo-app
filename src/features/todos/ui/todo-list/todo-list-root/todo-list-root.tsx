@@ -15,7 +15,7 @@ const TodoListRoot = (props: TodoListRoot.Props) => {
 
   return (
     <section>
-      {titleSlot}
+      <div className={styles.title}>{titleSlot}</div>
       <div className={styles.sort}>{sortSlot}</div>
       <div className={styles.search}>{searchSlot}</div>
       <ul className={styles.list}>

@@ -8,6 +8,10 @@
   display: contents;
 }
 
+.title {
+  margin-bottom: 0.75rem;
+}
+
 .sort {
   margin-bottom: 1rem;
 }
