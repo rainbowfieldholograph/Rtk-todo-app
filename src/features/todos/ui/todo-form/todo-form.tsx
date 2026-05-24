@@ -1,5 +1,6 @@
 import { type ComponentProps, useId, useState } from "react";
 
+import { WithState } from "~/shared/lib/with-state";
 import { Button } from "~/shared/ui/kit/button";
 import {
   Dialog,
@@ -48,19 +49,9 @@ const TodoForm = (props: TodoForm.Props) => {
   } = props;
 
   const [open, setOpen] = useState(false);
-  const [todoFields, setTodoFields] = useState(initialValues);
 
   const titleInputId = useId();
   const descriptionInputId = useId();
-
-  const handleSubmit: ComponentProps<"form">["onSubmit"] = (event) => {
-    event.preventDefault();
-
-    onSubmit(todoFields);
-
-    setOpen(false);
-    setTodoFields(initialValues);
-  };
 
   return (
     <Dialog onOpenChange={(open) => setOpen(open)} open={open}>
@@ -70,42 +61,59 @@ const TodoForm = (props: TodoForm.Props) => {
       <DialogContent>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
-        <form onSubmit={handleSubmit}>
-          <FieldSet>
-            <FieldGroup className={styles.fields}>
-              <Field>
-                <FieldLabel htmlFor={titleInputId}>Название задачи</FieldLabel>
-                <Input
-                  id={titleInputId}
-                  onChange={(event) => {
-                    setTodoFields((prevState) => ({
-                      ...prevState,
-                      title: event.target.value,
-                    }));
-                  }}
-                  placeholder="Введите название задачи"
-                  value={todoFields.title}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor={descriptionInputId}>Описание</FieldLabel>
-                <Textarea
-                  className={styles.textarea}
-                  id={descriptionInputId}
-                  onChange={(event) => {
-                    setTodoFields((prevState) => ({
-                      ...prevState,
-                      description: event.target.value,
-                    }));
-                  }}
-                  placeholder="Введите описание задачи"
-                  value={todoFields.description}
-                />
-              </Field>
-            </FieldGroup>
-            <Button type="submit">{submitLabel}</Button>
-          </FieldSet>
-        </form>
+        <WithState initialState={initialValues}>
+          {(todoFields, setTodoFields) => (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+
+                onSubmit(todoFields);
+
+                setOpen(false);
+                setTodoFields(initialValues);
+              }}
+            >
+              <FieldSet>
+                <FieldGroup className={styles.fields}>
+                  <Field>
+                    <FieldLabel htmlFor={titleInputId}>
+                      Название задачи
+                    </FieldLabel>
+                    <Input
+                      id={titleInputId}
+                      onChange={(event) => {
+                        setTodoFields((prevState) => ({
+                          ...prevState,
+                          title: event.target.value,
+                        }));
+                      }}
+                      placeholder="Введите название задачи"
+                      value={todoFields.title}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={descriptionInputId}>
+                      Описание
+                    </FieldLabel>
+                    <Textarea
+                      className={styles.textarea}
+                      id={descriptionInputId}
+                      onChange={(event) => {
+                        setTodoFields((prevState) => ({
+                          ...prevState,
+                          description: event.target.value,
+                        }));
+                      }}
+                      placeholder="Введите описание задачи"
+                      value={todoFields.description}
+                    />
+                  </Field>
+                </FieldGroup>
+                <Button type="submit">{submitLabel}</Button>
+              </FieldSet>
+            </form>
+          )}
+        </WithState>
       </DialogContent>
     </Dialog>
   );
