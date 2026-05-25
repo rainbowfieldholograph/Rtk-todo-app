@@ -6,6 +6,7 @@ import tseslint from "typescript-eslint";
 import perfectionist from "eslint-plugin-perfectionist";
 import { defineConfig, globalIgnores } from "eslint/config";
 import { eslintBoundariesConfig } from "./eslint.boundaries.js";
+import testingLibrary from "eslint-plugin-testing-library";
 
 export default defineConfig([
   globalIgnores(["dist"]),
@@ -35,6 +36,13 @@ export default defineConfig([
       "perfectionist/sort-named-exports": ["warn"],
       "perfectionist/sort-union-types": ["warn"],
       "perfectionist/sort-exports": ["warn"],
+    },
+  },
+  {
+    files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+    extends: [testingLibrary.configs["flat/react"]],
+    rules: {
+      "testing-library/prefer-screen-queries": "error",
     },
   },
 ]);
