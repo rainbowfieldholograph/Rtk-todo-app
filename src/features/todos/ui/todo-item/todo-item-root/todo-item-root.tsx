@@ -48,11 +48,14 @@ const TodoItemRoot = (props: TodoItemRoot.Props) => {
       </CardHeader>
       <CardContent>
         <div>{description}</div>
-        <time dateTime={createdAt}>Дата создания: {createdAtFormatted}</time>
+        <div>
+          Дата создания: <time dateTime={createdAt}>{createdAtFormatted}</time>
+        </div>
         {updatedAtFormatted ? (
-          <time dateTime={updatedAt}>
-            Дата обновления: {updatedAtFormatted}
-          </time>
+          <div>
+            Дата обновления:{" "}
+            <time dateTime={updatedAt}>{updatedAtFormatted}</time>
+          </div>
         ) : null}
       </CardContent>
       <CardFooter>
