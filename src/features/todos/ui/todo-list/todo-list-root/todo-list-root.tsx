@@ -15,9 +15,9 @@ const TodoListRoot = (props: TodoListRoot.Props) => {
 
   return (
     <section>
-      <div className={styles.title}>{titleSlot}</div>
-      <div className={styles.sort}>{sortSlot}</div>
-      <div className={styles.search}>{searchSlot}</div>
+      {titleSlot ? <div className={styles.title}>{titleSlot}</div> : null}
+      {sortSlot ? <div className={styles.sort}>{sortSlot}</div> : null}
+      {searchSlot ? <div className={styles.search}>{searchSlot}</div> : null}
       <ul className={styles.list}>
         {Children.map(children, (child) => (
           <li className={styles.listItem}>{child}</li>
