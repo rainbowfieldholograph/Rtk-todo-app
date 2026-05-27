@@ -7,6 +7,7 @@ import perfectionist from "eslint-plugin-perfectionist";
 import { defineConfig, globalIgnores } from "eslint/config";
 import { eslintBoundariesConfig } from "./eslint.boundaries.js";
 import testingLibrary from "eslint-plugin-testing-library";
+import jestDom from "eslint-plugin-jest-dom-ya";
 
 export default defineConfig([
   globalIgnores(["dist"]),
@@ -40,7 +41,10 @@ export default defineConfig([
   },
   {
     files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-    extends: [testingLibrary.configs["flat/react"]],
+    extends: [
+      testingLibrary.configs["flat/react"],
+      jestDom.configs["flat/recommended"],
+    ],
     rules: {
       "testing-library/prefer-screen-queries": "error",
     },
