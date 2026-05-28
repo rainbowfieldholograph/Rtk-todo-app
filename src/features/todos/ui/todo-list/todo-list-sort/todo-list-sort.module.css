@@ -12,3 +12,7 @@
   max-width: 20rem;
   width: 100%;
 }
+
+.label {
+  max-width: min-content;
+}

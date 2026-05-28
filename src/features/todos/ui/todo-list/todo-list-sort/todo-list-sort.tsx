@@ -75,7 +75,9 @@ const TodoListSort = (props: TodoListSort.Props) => {
 
   return (
     <Field>
-      <FieldLabel htmlFor={selectId}>Сортировка:</FieldLabel>
+      <FieldLabel className={styles.label} htmlFor={selectId}>
+        Сортировка:
+      </FieldLabel>
       <Select
         id={selectId}
         onValueChange={(sort) => {
