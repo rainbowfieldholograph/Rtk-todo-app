@@ -33,6 +33,33 @@ const TodoItemCompletedCheckbox = (props: TodoItemCompletedCheckbox.Props) => {
   );
 };
 
+namespace TodoItemPinned {
+  export type Props = { id: TodoId };
+}
+
+const TodoItemPinned = (props: TodoItemPinned.Props) => {
+  const { id } = props;
+
+  const pinned = useAppSelector((state) =>
+    todosSlice.selectors.todoPinned(state, id),
+  );
+  const dispatch = useDispatch();
+
+  const handlePinnedChange: TodoItemUi.Pinned.Props["onPinnedChange"] = (
+    updatedPinned,
+  ) => {
+    dispatch(
+      todosSlice.actions.updateTodoPinned({ id, pinned: updatedPinned }),
+    );
+  };
+
+  if (pinned === undefined) return null; // TODO: throw?
+
+  return (
+    <TodoItemUi.Pinned onPinnedChange={handlePinnedChange} pinned={pinned} />
+  );
+};
+
 namespace TodoItem {
   export type Props = { id: TodoId };
 }
@@ -62,6 +89,7 @@ const TodoItem = memo((props: TodoItem.Props) => {
       title={title}
       todoCompletedSlot={<TodoItemCompletedCheckbox id={id} />}
       todoEditorSlot={<TodoEditor todo={todo} />}
+      todoPinnedSlot={<TodoItemPinned id={id} />}
       updatedAt={updatedAt}
     />
   );
