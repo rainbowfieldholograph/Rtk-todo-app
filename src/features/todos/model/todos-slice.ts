@@ -16,7 +16,7 @@ type SortField = keyof Pick<
   Todo,
   "completed" | "createdAt" | "description" | "title" | "updatedAt"
 >;
-/** asc: возрастание, desc: убывание */
+/** asc: возрастание (если даты, то от старых к новым), desc: убывание (если даты, то от новых к старым) */
 type SortOrder = "asc" | "desc";
 
 type State = {
@@ -70,7 +70,7 @@ const sortTodos = (todos: Todo[], sort: Sort) => {
   return sortedTodos;
 };
 
-const initialSort: Sort = { field: "createdAt", order: "asc" };
+const initialSort: Sort = { field: "updatedAt", order: "desc" };
 const initialSearch: Search = { field: "title", value: "" };
 const initialTodos: TodosEntityState = todos.reduce(
   (acc, cur) => {
