@@ -6,14 +6,14 @@ import { Button } from "~/shared/ui/kit/button";
 
 import styles from "./todo-item-pinned.module.css";
 
-namespace TodoItemPinned {
+namespace TodoItemPinToggle {
   export type Props = {
     onPinnedChange: (pinned: boolean) => void;
     pinned: boolean;
   };
 }
 
-const TodoItemPinned = (props: TodoItemPinned.Props) => {
+const TodoItemPinToggle = (props: TodoItemPinToggle.Props) => {
   const { onPinnedChange, pinned } = props;
 
   const handlePinnedChange = () => {
@@ -30,4 +30,4 @@ const TodoItemPinned = (props: TodoItemPinned.Props) => {
   );
 };
 
-export { TodoItemPinned };
+export { TodoItemPinToggle };

@@ -45,7 +45,7 @@ const TodoItemPinned = (props: TodoItemPinned.Props) => {
   );
   const dispatch = useDispatch();
 
-  const handlePinnedChange: TodoItemUi.Pinned.Props["onPinnedChange"] = (
+  const handlePinnedChange: TodoItemUi.PinToggle.Props["onPinnedChange"] = (
     updatedPinned,
   ) => {
     dispatch(
@@ -56,7 +56,7 @@ const TodoItemPinned = (props: TodoItemPinned.Props) => {
   if (pinned === undefined) return null; // TODO: throw?
 
   return (
-    <TodoItemUi.Pinned onPinnedChange={handlePinnedChange} pinned={pinned} />
+    <TodoItemUi.PinToggle onPinnedChange={handlePinnedChange} pinned={pinned} />
   );
 };
 
