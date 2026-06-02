@@ -33,11 +33,11 @@ const TodoItemCompletedCheckbox = (props: TodoItemCompletedCheckbox.Props) => {
   );
 };
 
-namespace TodoItemPinned {
+namespace TodoItemPinToggle {
   export type Props = { id: TodoId };
 }
 
-const TodoItemPinned = (props: TodoItemPinned.Props) => {
+const TodoItemPinToggle = (props: TodoItemPinToggle.Props) => {
   const { id } = props;
 
   const pinned = useAppSelector((state) =>
@@ -89,7 +89,7 @@ const TodoItem = memo((props: TodoItem.Props) => {
       title={title}
       todoCompletedSlot={<TodoItemCompletedCheckbox id={id} />}
       todoEditorSlot={<TodoEditor todo={todo} />}
-      todoPinnedSlot={<TodoItemPinned id={id} />}
+      todoPinnedSlot={<TodoItemPinToggle id={id} />}
       updatedAt={updatedAt}
     />
   );
