@@ -30,6 +30,7 @@ type Todo = {
   createdAt: string;
   description: string;
   id: TodoId;
+  pinned: boolean;
   title: string;
   /** ISO 8601 с миллисекундами (2026-05-07T10:30:00.000Z) */
   updatedAt: string;
@@ -74,7 +75,7 @@ const initialSort: Sort = { field: "updatedAt", order: "desc" };
 const initialSearch: Search = { field: "title", value: "" };
 const initialTodos: TodosEntityState = todos.reduce(
   (acc, cur) => {
-    acc.entities[cur.id] = cur;
+    acc.entities[cur.id] = { ...cur, pinned: false };
     acc.ids.push(cur.id);
     return acc;
   },
@@ -142,6 +143,7 @@ const todosSlice = createSlice({
           id,
           ...action.payload,
           createdAt: dateNowISO,
+          pinned: false,
           updatedAt: dateNowISO,
         };
 
@@ -210,6 +212,19 @@ const todosSlice = createSlice({
       },
     );
 
+    const updateTodoPinned = create.reducer(
+      (state, action: PayloadAction<{ id: TodoId; pinned: boolean }>) => {
+        const { id, pinned } = action.payload;
+        const todo = state.items.entities[id];
+
+        if (!todo) {
+          throw new Error(`Todo with id ${id} not found in entities`);
+        }
+
+        todo.pinned = pinned;
+      },
+    );
+
     return {
       changeSort,
       createTodo,
@@ -217,6 +232,7 @@ const todosSlice = createSlice({
       removeTodo,
       toggleTodoCompleted,
       updateSearch,
+      updateTodoPinned,
     };
   },
   selectors: {
@@ -229,6 +245,7 @@ const todosSlice = createSlice({
     todoEntities: (state: State) => state.items.entities,
     todoIds: (state: State) => state.items.ids,
     todoList: selectTodoList,
+    todoPinned: (state: State, id: TodoId) => state.items.entities[id]?.pinned,
     visibleTodos: selectVisibleTodos,
     visibleTodosCount: createSelector(
       [selectVisibleTodos],

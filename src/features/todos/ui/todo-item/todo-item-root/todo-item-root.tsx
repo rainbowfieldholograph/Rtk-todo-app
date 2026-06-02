@@ -1,9 +1,10 @@
-import { type ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 
 import { dateTimeFormatter } from "~/shared/lib/date";
 import { Button } from "~/shared/ui/kit/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardFooter,
   CardHeader,
@@ -20,11 +21,12 @@ namespace TodoItemRoot {
     title: string;
     todoCompletedSlot: ReactNode;
     todoEditorSlot: ReactNode;
+    todoPinnedSlot: ReactNode;
     updatedAt: string;
   };
 }
 
-const TodoItemRoot = (props: TodoItemRoot.Props) => {
+const TodoItemRoot = memo((props: TodoItemRoot.Props) => {
   const {
     createdAt,
     description,
@@ -32,6 +34,7 @@ const TodoItemRoot = (props: TodoItemRoot.Props) => {
     title,
     todoCompletedSlot,
     todoEditorSlot,
+    todoPinnedSlot,
     updatedAt,
   } = props;
 
@@ -45,6 +48,7 @@ const TodoItemRoot = (props: TodoItemRoot.Props) => {
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
+        <CardAction>{todoPinnedSlot}</CardAction>
       </CardHeader>
       <CardContent>
         <div>{description}</div>
@@ -69,6 +73,8 @@ const TodoItemRoot = (props: TodoItemRoot.Props) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+TodoItemRoot.displayName = "TodoItemRoot";
 
 export { TodoItemRoot };
