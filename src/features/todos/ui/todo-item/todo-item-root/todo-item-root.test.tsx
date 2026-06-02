@@ -12,6 +12,7 @@ const todo: Todo = {
   createdAt: "2026-05-05T09:15:00.000Z",
   description: "Description",
   id: "0",
+  pinned: false,
   title: "Title",
   updatedAt: "2026-05-07T11:20:00.000Z",
 };
@@ -26,6 +27,7 @@ describe("<TodoItemRoot />", () => {
         title={todo.title}
         todoCompletedSlot={null}
         todoEditorSlot={null}
+        todoPinnedSlot={null}
         updatedAt={todo.updatedAt}
       />,
     );
