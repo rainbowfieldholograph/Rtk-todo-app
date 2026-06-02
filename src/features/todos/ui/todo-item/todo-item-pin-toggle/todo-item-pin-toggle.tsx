@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import { Button } from "~/shared/ui/kit/button";
 
-import styles from "./todo-item-pinned.module.css";
+import styles from "./todo-item-pin-toggle.module.css";
 
 namespace TodoItemPinToggle {
   export type Props = {
