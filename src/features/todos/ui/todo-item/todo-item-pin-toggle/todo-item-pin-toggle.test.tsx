@@ -17,7 +17,7 @@ const TodoItemPinToggleWithState = () => {
 };
 
 describe("<TodoItemPinToggle />", () => {
-  it("should render component and toggle state", async () => {
+  it("should toggle pin state", async () => {
     const user = userEvent.setup();
 
     render(<TodoItemPinToggleWithState />);
@@ -27,5 +27,8 @@ describe("<TodoItemPinToggle />", () => {
 
     await user.click(buttonNode);
     expect(buttonNode).toHaveAttribute("aria-pressed", "true");
+
+    await user.click(buttonNode);
+    expect(buttonNode).toHaveAttribute("aria-pressed", "false");
   });
 });
