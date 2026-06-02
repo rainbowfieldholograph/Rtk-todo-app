@@ -88,7 +88,7 @@ const TodoItem = memo((props: TodoItem.Props) => {
       onRemove={handleRemove}
       title={title}
       todoCompletedSlot={<TodoItemCompletedCheckbox id={id} />}
-      todoEditorSlot={<TodoEditor todo={todo} />}
+      todoEditorSlot={<TodoEditor id={id} />}
       todoPinnedSlot={<TodoItemPinToggle id={id} />}
       updatedAt={updatedAt}
     />
