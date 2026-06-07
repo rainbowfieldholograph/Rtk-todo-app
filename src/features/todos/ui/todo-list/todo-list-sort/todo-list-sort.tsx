@@ -57,7 +57,7 @@ type SortSelectItem = { label: string; sort: Sort };
 
 namespace TodoListSort {
   export type Props = {
-    onSelectedSortChange: (options: { sort: Sort }) => void;
+    onSelectedSortChange: (sort: Sort) => void;
     selectedSort: Sort;
   };
 }
@@ -82,7 +82,7 @@ const TodoListSort = (props: TodoListSort.Props) => {
         id={selectId}
         onValueChange={(sort) => {
           if (!sort) return;
-          onSelectedSortChange({ sort });
+          onSelectedSortChange(sort);
         }}
         value={selectedSort}
       >
@@ -108,4 +108,4 @@ const TodoListSort = (props: TodoListSort.Props) => {
   );
 };
 
-export { TodoListSort };
+export { sortSelectItems, TodoListSort };

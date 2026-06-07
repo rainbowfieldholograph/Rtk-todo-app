@@ -1,5 +1,5 @@
 import { TodoCreator } from "../controllers/todo-creator";
-import { TodoList } from "../controllers/todo-list";
+import { TodoList } from "../controllers/todo-list/todo-list";
 import styles from "./todo-list-page.module.css";
 
 const TodoListPage = () => {

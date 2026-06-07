@@ -6,7 +6,7 @@ export default defineConfig({
   resolve: { tsconfigPaths: true },
   test: {
     coverage: { provider: "v8" },
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: ["./src/test/setup.ts"],
   },
 });
